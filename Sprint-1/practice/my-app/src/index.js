@@ -15,14 +15,16 @@ class Board extends React.Component {
     super(props);
     this.state = {
       squares: Array(9).fill(null),
+      xIsNext: true,
     };
   }
 
   // 클릭시 함수: state 끌어올리기
+  // "X", "O" 번갈아 나타남
   handleClick(i) {
     const squares = this.state.squares.slice();
-    squares[i] = 'X';
-    this.setState({ squares: squares });
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    this.setState({ squares: squares, xIsNext: !this.state.xIsNext });
   }
 
   renderSquare(i) {
@@ -35,7 +37,7 @@ class Board extends React.Component {
   }
 
   render() {
-    const status = 'Next player: X';
+    const status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
 
     return (
       <div>
