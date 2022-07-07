@@ -43,6 +43,7 @@ class Game extends React.Component {
     this.state = {
       // 시간 여행
       history: [{ squares: new Array(9).fill(null) }],
+      location: [null],
       stepNumber: 0,
       xIsNext: true,
     };
@@ -53,6 +54,7 @@ class Game extends React.Component {
   handleClick(i) {
     // slice: “시간을 되돌려” 그 시점에서 새로운 움직임을 보이면, 지금은 올바르지 않은 “미래”의 기록을 모두 버리는 것을 보장
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
+    const location = this.state.location.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
 
@@ -63,6 +65,7 @@ class Game extends React.Component {
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
       history: [...history, { squares }],
+      location: [...location, [Math.floor(i / 3), i % 3]],
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
     });
@@ -79,14 +82,20 @@ class Game extends React.Component {
 
   render() {
     const history = this.state.history;
+    const location = this.state.location;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
       const desc = move ? `${move}번째로 이동` : `처음으로 이동`;
+      const desc_location = move
+        ? `(${location[move][0]}, ${location[move][1]})`
+        : '';
+
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <span>{desc_location}</span>
         </li>
       );
     });
