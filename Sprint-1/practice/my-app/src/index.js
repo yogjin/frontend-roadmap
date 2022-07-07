@@ -46,6 +46,7 @@ class Game extends React.Component {
       location: [null],
       stepNumber: 0,
       xIsNext: true,
+      isAscending: true,
     };
   }
 
@@ -68,6 +69,7 @@ class Game extends React.Component {
       location: [...location, [Math.floor(i / 3), i % 3]],
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
+      isAscending: true,
     });
   }
 
@@ -82,6 +84,7 @@ class Game extends React.Component {
 
   render() {
     const history = this.state.history;
+
     const location = this.state.location;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
@@ -105,6 +108,11 @@ class Game extends React.Component {
       );
     });
 
+    // 오름차순이나 내림차순으로 이동을 정렬
+    if (!this.state.isAscending) {
+      moves.reverse();
+    }
+
     let status;
     if (winner) {
       status = `Winner: ${winner}`;
@@ -121,6 +129,14 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
+          {/* 오름차순이나 내림차순으로 이동을 정렬하도록 토글 버튼을 추가 */}
+          <button
+            onClick={() =>
+              this.setState({ isAscending: !this.state.isAscending })
+            }
+          >
+            {this.state.isAscending ? '내림차순 정렬하기' : '오름차순 정렬하기'}
+          </button>
           <ol>{moves}</ol>
         </div>
       </div>
