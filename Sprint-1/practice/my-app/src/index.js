@@ -4,7 +4,13 @@ import './index.css';
 
 function Square(props) {
   return (
-    <button className="square" onClick={props.onClick}>
+    <button
+      className="square"
+      onClick={props.onClick}
+      style={{
+        backgroundColor: props.isWinnerIndex ? 'yellowgreen' : '',
+      }}
+    >
       {props.value}
     </button>
   );
@@ -16,6 +22,7 @@ class Board extends React.Component {
       <Square
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)} // state 끌어올리기
+        isWinnerIndex={this.props.winnerIndexes.includes(i)}
       />
     );
   }
@@ -114,8 +121,10 @@ class Game extends React.Component {
     }
 
     let status;
+    let winnerIndexes = [];
     if (winner) {
-      status = `Winner: ${winner}`;
+      status = `Winner: ${winner.player}`;
+      winnerIndexes = winner.indexes;
     } else {
       status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
     }
@@ -125,11 +134,12 @@ class Game extends React.Component {
           <Board
             squares={current.squares}
             onClick={(i) => this.handleClick(i)}
+            winnerIndexes={winnerIndexes}
           />
         </div>
         <div className="game-info">
           <div>{status}</div>
-          {/* 오름차순이나 내림차순으로 이동을 정렬하도록 토글 버튼을 추가 */}
+          {/* 오름차순이나 내림차순으로 이동을 정렬하는 토글 버튼 */}
           <button
             onClick={() =>
               this.setState({ isAscending: !this.state.isAscending })
@@ -163,7 +173,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return { player: squares[a], indexes: [a, b, c] };
     }
   }
   return null;
