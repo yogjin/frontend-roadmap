@@ -125,6 +125,9 @@ class Game extends React.Component {
     if (winner) {
       status = `Winner: ${winner.player}`;
       winnerIndexes = winner.indexes;
+    } else if (!winner && this.state.stepNumber === 9) {
+      // 승자가 없는 경우 무승부라는 메시지를 표시
+      status = '무승부!!';
     } else {
       status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
     }
